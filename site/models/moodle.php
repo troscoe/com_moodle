@@ -21,31 +21,53 @@ class MoodleModelMoodle extends JModelItem
 	 * @var string message
 	 */
 	protected $message;
- 
+  
+	/**
+	 * Method to get a table object, load it if necessary.
+	 *
+	 * @param   string  $type    The table name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  JTable  A JTable object
+	 *
+	 * @since   1.6
+	 */
+	public function getTable($type = 'Moodle', $prefix = 'MoodleTable', $config = array())
+	{
+		return JTable::getInstance($type, $prefix, $config);
+	}
+
 	/**
 	 * Get the message
-         *
-	 * @return  string  The message to be displayed to the user
+	 *
+	 * @param   integer  $id  Name Id
+	 *
+	 * @return  string        Fetched String from Table for relevant Id
 	 */
-	public function getMsg()
+	public function getMsg($id = 1)
 	{
-		if (!isset($this->message))
+		if (!is_array($this->messages))
 		{
+			$this->messages = array();
+		}
+ 
+		if (!isset($this->messages[$id]))
+		{
+			// Request the selected id
 			$jinput = JFactory::getApplication()->input;
 			$id     = $jinput->get('id', 1, 'INT');
  
-			switch ($id)
-			{
-				case 2:
-					$this->message = 'Good bye World!';
-					break;
-				default:
-				case 1:
-					$this->message = 'Hello World!';
-					break;
-			}
+			// Get a TableMoodle instance
+			$table = $this->getTable();
+ 
+			// Load the message
+			$table->load($id);
+ 
+			// Assign the message
+			$this->messages[$id] = $table->name;
 		}
  
-		return $this->message;
+		return $this->messages[$id];
 	}
 }
