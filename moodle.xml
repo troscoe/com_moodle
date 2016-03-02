@@ -45,6 +45,10 @@
 			<filename>moodle.php</filename>
 			<!-- SQL files section -->
 			<folder>sql</folder>
+			<!-- tables files section -->
+			<folder>tables</folder>
+			<!-- models files section -->
+			<folder>models</folder>
 		</files>
 	</administration>
  
