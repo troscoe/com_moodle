@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @since  0.0.1
  */
-class MoodleModelMoodle extends JModelItem
+class MoodleModelFacetoface extends JModelItem
 {
 	/**
 	 * @var string message
@@ -33,7 +33,7 @@ class MoodleModelMoodle extends JModelItem
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'Moodle', $prefix = 'MoodleTable', $config = array())
+	public function getTable($type = 'Facetoface', $prefix = 'MoodleTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}

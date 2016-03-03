@@ -17,14 +17,14 @@ JFormHelper::loadFieldClass('list');
  *
  * @since  0.0.1
  */
-class JFormFieldMoodle extends JFormFieldList
+class JFormFieldFacetoface extends JFormFieldList
 {
 	/**
 	 * The field type.
 	 *
 	 * @var         string
 	 */
-	protected $type = 'Moodle';
+	protected $type = 'Facetoface';
  
 	/**
 	 * Method to get a list of options for a list input.

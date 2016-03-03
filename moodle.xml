@@ -10,7 +10,7 @@
 	<copyright>Copyright Info</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.0.6</version>
+	<version>0.0.15</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>Description of the Moodle component ...</description>
  
@@ -33,8 +33,6 @@
 	</files>
  
 	<administration>
-		<!-- Administration Menu Section -->
-		<menu link='index.php?option=com_moodle'>Moodle</menu>
 		<!-- Administration Main File Copy Section -->
 		<!-- Note the folder attribute: This attribute describes the folder
 			to copy FROM in the package to install therefore files copied
