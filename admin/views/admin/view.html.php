@@ -26,9 +26,8 @@ class MoodleViewAdmin extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
-		// Get data from the model
-		$this->items		= $this->get('Items');
-		$this->pagination	= $this->get('Pagination');
+		// Assign data to the view
+		$this->msg = 'Moodle is a learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments.';
  
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -37,8 +36,23 @@ class MoodleViewAdmin extends JViewLegacy
  
 			return false;
 		}
+
+		// Set the toolbar
+		$this->addToolBar();
  
 		// Display the template
 		parent::display($tpl);
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
+	 */
+	protected function addToolBar()
+	{
+		JToolBarHelper::title(JText::_('COM_MOODLE_MANAGER_ADMIN'));
 	}
 }
