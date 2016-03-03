@@ -48,7 +48,7 @@ defined('_JEXEC') or die('Restricted Access');
 							<?php echo JHtml::_('grid.id', $i, $row->id); ?>
 						</td>
 						<td>
-							<?php echo $row->greeting; ?>
+							<?php echo $row->name; ?>
 						</td>
 						<td align="center">
 							<?php echo JHtml::_('jgrid.published', $row->published, $i, 'admin.', true, 'cb'); ?>

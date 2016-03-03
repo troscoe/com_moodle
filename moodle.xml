@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2.0" method="upgrade">
  
-	<name>Moodle</name>
+	<name>COM_MOODLE</name>
 	<!-- The following elements are optional and free of formatting constraints -->
 	<creationDate>March 2016</creationDate>
 	<author>Tristan Roscoe</author>
@@ -10,9 +10,9 @@
 	<copyright>Copyright Info</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.0.7</version>
+	<version>0.0.8</version>
 	<!-- The description is optional and defaults to the name -->
-	<description>Description of the Moodle component ...</description>
+	<description>COM_MOODLE_DESCRIPTION</description>
  
 	<update> <!-- Runs on update; New since J2.5 -->
 		<schemas>
@@ -31,10 +31,14 @@
 		<folder>views</folder>
 		<folder>models</folder>
 	</files>
+
+	<languages folder="site/language">
+		<language tag="en-GB">en-GB/en-GB.com_helloworld.ini</language>
+    </languages>
  
 	<administration>
 		<!-- Administration Menu Section -->
-		<menu link='index.php?option=com_moodle'>Moodle Admin</menu>
+		<menu link='index.php?option=com_moodle'>COM_MOODLE_MENU</menu>
 		<!-- Administration Main File Copy Section -->
 		<!-- Note the folder attribute: This attribute describes the folder
 			to copy FROM in the package to install therefore files copied
@@ -53,6 +57,10 @@
 			<!-- views files section -->
 			<folder>views</folder>
 		</files>
+		<languages folder="admin/language">
+        	<language tag="en-GB">en-GB/en-GB.com_helloworld.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_helloworld.sys.ini</language>
+		</languages>
 	</administration>
  
 </extension>
