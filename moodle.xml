@@ -33,7 +33,7 @@
 	</files>
 
 	<languages folder="site/language">
-		<language tag="en-GB">en-GB/en-GB.com_helloworld.ini</language>
+		<language tag="en-GB">en-GB/en-GB.com_moodle.ini</language>
     </languages>
  
 	<administration>
@@ -58,8 +58,8 @@
 			<folder>views</folder>
 		</files>
 		<languages folder="admin/language">
-        	<language tag="en-GB">en-GB/en-GB.com_helloworld.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_helloworld.sys.ini</language>
+        	<language tag="en-GB">en-GB/en-GB.com_moodle.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_moodle.sys.ini</language>
 		</languages>
 	</administration>
  
