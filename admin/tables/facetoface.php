@@ -10,11 +10,11 @@
 defined('_JEXEC') or die('Restricted access');
  
 /**
- * Moodle Table class
+ * Facetoface Table class
  *
  * @since  0.0.1
  */
-class MoodleTableMoodle extends JTable
+class MoodleTableFacetoface extends JTable
 {
 	/**
 	 * Constructor
