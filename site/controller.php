@@ -21,5 +21,5 @@ class MoodleController extends JControllerLegacy
 	 * @var string
 	 * @since 12.2
 	 */
-	protected $default_view = 'facetoface';
+	protected $default_view = 'sessions';
 }

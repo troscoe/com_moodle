@@ -10,4 +10,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 ?>
-<h1><?php echo $this->msg; ?></h1>
+<div class="session-list<?php echo $this->pageclass_sfx;?>">
+	<div>
+		<div class="<?php echo $className .'-session' . $this->pageclass_sfx;?>">
+			<?php if ($this->params->get('show_page_heading')) : ?>
+				<h1>
+					<?php echo $this->escape($this->params->get('page_heading')); ?>
+				</h1>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>
