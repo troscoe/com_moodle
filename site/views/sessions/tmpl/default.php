@@ -9,6 +9,13 @@
  
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+// Create some shortcuts.
+$params    = &$this->item->params;
+$n         = count($this->items);
+$listOrder = $this->escape($this->state->get('list.ordering'));
+$listDirn  = $this->escape($this->state->get('list.direction'));
+
 ?>
 <div class="session-list<?php echo $this->pageclass_sfx;?>">
 	<div>
@@ -23,8 +30,6 @@ defined('_JEXEC') or die('Restricted access');
 				<p><?php echo "No sessions"; ?></p>
 			<?php else : ?>
 				<form action="<?php echo htmlspecialchars(JUri::getInstance()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
-	
-					<?php if ($this->params->get('show_headings') || $this->params->get('filter_field') != 'hide' || $this->params->get('show_pagination_limit')) :?>
 					<fieldset class="filters btn-toolbar clearfix">
 						<?php if ($this->params->get('filter_field') != 'hide') :?>
 							<div class="btn-group">
@@ -48,38 +53,37 @@ defined('_JEXEC') or die('Restricted access');
 						<input type="hidden" name="limitstart" value="" />
 						<input type="hidden" name="task" value="" />
 					</fieldset>
-					<?php endif; ?>
 
 
 					<table class="sessions table table-striped table-bordered table-hover">
 						<?php
-						$headerCourse    			= '';
+						$headerName    			= '';
 						$headerDate    			= '';
 						$headerLength	     	= '';
 						$headerStatus   		= '';
 						?>
 						<!--<?php //if ($this->params->get('show_headings')) : ?>-->
 							<?php
-							$headerCourse   = 'headers="sessionslist_header_course"';
+							$headerCourse   = 'headers="sessionslist_header_name"';
 							$headerDate   = 'headers="sessionslist_header_date"';
 							$headerLength   = 'headers="sessionslist_header_length"';
 							$headerStatus   = 'headers="sessionslist_header_status"';
 							?>
 						<thead>
 							<tr>
-								<th id="sessionslist_header_course">
-									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_COURSE', 'a.course', $listDirn, $listOrder); ?>
+								<th id="sessionslist_header_name">
+									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_NAME', 'name', $listDirn, $listOrder); ?>
 								</th>
 								<?php foreach ($this->items[0]->fields as $i => $field) : ?>
 									<th id="sessionslist_header_<?php echo $field['shortname']; ?>">
-										<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_'.strtoupper($field['shortname']), 'a.'.$field['shortname'], $listDirn, $listOrder); ?>
+										<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_'.strtoupper($field['shortname']), 'field.'.$field['shortname'], $listDirn, $listOrder); ?>
 									</th>
 								<?php endforeach; ?>
 								<th id="sessionslist_header_date">
-									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_DATE', 'a.date', $listDirn, $listOrder); ?>
+									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_DATE', 'date', $listDirn, $listOrder); ?>
 								</th>
 								<th id="sessionslist_header_length">
-									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_LENGTH', 'a.length', $listDirn, $listOrder); ?>
+									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_LENGTH', 'length', $listDirn, $listOrder); ?>
 								</th>
 								<th id="sessionslist_header_status">
 									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_STATUS', 'a.status', $listDirn, $listOrder); ?>
@@ -91,7 +95,7 @@ defined('_JEXEC') or die('Restricted access');
 
 							<?php foreach ($this->items as $i => $session) : ?>
 								<tr class="sessions-list-row<?php echo $i % 2; ?>" >
-									<td <?php echo $headerCourse; ?> class="list-course">
+									<td <?php echo $headerName; ?> class="list-name">
 										<a href="#">
 											<?php echo $this->escape($session->name); ?>
 										</a>
@@ -104,26 +108,17 @@ defined('_JEXEC') or die('Restricted access');
 									<td <?php echo $headerDate; ?> class="list-date">
 										<?php
 										echo JHtml::_(
-											'date', $session->dates['0']['timestart'],
+											'date', $session->date,
 											$this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC3')))
 										); ?>
 									</td>
 
 									<td <?php echo $headerLength; ?> class="list-length">
-										<?php echo $session->date_count . ' day(s)'; ?>
+										<?php echo $session->length . ' day(s)'; ?>
 									</td>
 									<td <?php echo $headerStatus; ?> class="list-status">
-										<?php echo $session->field_count ?>
+										<?php echo $session->id ?>
 									</td>
-
-
-
-
-
-
-
-
-
 								</tr>
 							<?php endforeach; ?>
 						</tbody>

@@ -18,6 +18,47 @@ defined('_JEXEC') or die('Restricted access');
 class MoodleModelSessions extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @since   1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields']))
+		{
+			$config['filter_fields'] = array(
+				'name',
+				'date',
+				'length',
+				'city','field.city',
+				'country','field.country',
+				'language','field.language',
+				'provider','field.provider'
+			);
+		}
+		parent::__construct($config);
+	}
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   The field to order on.
+	 * @param   string  $direction  The direction to order on.
+	 *
+	 * @return  void.
+	 *
+	 * @since   1.6
+	 */
+	protected function populateState($ordering = 'f.name', $direction = 'desc')
+	{
+		//Set list state ordering defaults
+		parent::populateState($ordering, $direction);
+	}
+
+	/**
 	 * Gets the list of users and adds expensive joins to the result set.
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
@@ -126,10 +167,37 @@ class MoodleModelSessions extends JModelList
 		$query = $db->getQuery(true);
  
 		// Create the base select statement.
-		$query->select('session.id, f2f.name, session.capacity')
-                ->from('#__moodle_facetoface_sessions AS session')
-                ->join('LEFT', '#__moodle_facetoface AS f2f ON f2f.id = session.facetoface');
- 
+		$query->select(
+			$this->getState(
+				'list.select',
+				's.id, s.capacity'
+			)
+		);
+
+		$query->from('#__moodle_facetoface_sessions AS s');
+
+		$query->select('f.name as name');
+		$query->join('LEFT', '#__moodle_facetoface AS f ON f.id = s.facetoface');
+
+		$query->select('IF (s.datetimeknown = 0, 0, from_unixtime(min(d.timestart))) as date, count(d.timestart) as length');
+		$query->join('LEFT', '#__moodle_facetoface_sessions_dates AS d ON d.sessionid = s.id');
+
+		$listOrder = $db->escape($this->state->get('list.ordering',  'default_sort_column'));
+		$listDirn  = $db->escape($this->state->get('list.direction', 'ASC'));
+
+		$pieces = explode(".", $listOrder);
+		if ($pieces[0] == 'field') {
+			$query->select('e.data as '.$pieces[1]);
+			$query->join('LEFT', '#__moodle_facetoface_session_data AS e ON e.sessionid = s.id');
+			$query->join('LEFT', '#__moodle_facetoface_session_field AS g ON g.id = e.fieldid');
+			$query->where('g.shortname ="'.$pieces[1].'"');
+			$query->order($pieces[1].' '.$listDirn);
+		} else {
+			$query->order($listOrder.' '.$listDirn);
+		}
+ 		$query->where('d.timestart >= UNIX_TIMESTAMP()');
+ 		$query->group($db->quoteName('s.id'));
+
 		return $query;
 	}
 
