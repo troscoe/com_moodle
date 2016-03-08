@@ -75,7 +75,18 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 							<?php foreach ($this->items as $i => $session) : ?>
 								<tr class="sessions-list-row<?php echo $i % 2; ?>" >
 									<td <?php echo $headerName; ?> class="list-name">
-										<a href="#">
+										<?php
+
+										$cat_id = $session->cat_id;
+									    $cat_name = $session->cat_name;
+									    $course_id = $session->course_id;
+
+										$cat_slug = JFilterOutput::stringURLSafe ($session->cat_name);
+									    $course_slug = JFilterOutput::stringURLSafe ($session->course_name);
+
+									    $url = JRoute::_("index.php?option=com_joomdle&view=detail&cat_id=$cat_id:$cat_slug&course_id=$course_id:$course_slug&Itemid=$itemid&session_id=$session->id");
+										?>
+										<a href="<?php echo $url; ?>">
 											<?php echo $this->escape($session->name); ?>
 										</a>
 									</td>

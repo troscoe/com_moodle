@@ -179,6 +179,12 @@ class MoodleModelSessions extends JModelList
 		$query->select('f.name as name');
 		$query->join('LEFT', '#__moodle_facetoface AS f ON f.id = s.facetoface');
 
+		$query->select('c.id AS course_id, c.fullname AS course_name');
+		$query->join('LEFT', '#__moodle_course AS c ON c.id = f.course');
+
+		$query->select('cat.id AS cat_id, cat.name AS cat_name');
+		$query->join('LEFT', '#__moodle_course_categories AS cat ON cat.id = c.category');
+
 		$query->select('IF (s.datetimeknown = 0, 0, from_unixtime(min(d.timestart))) as date, count(d.timestart) as length');
 		$query->join('LEFT', '#__moodle_facetoface_sessions_dates AS d ON d.sessionid = s.id');
 
