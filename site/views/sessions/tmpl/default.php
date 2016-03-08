@@ -19,11 +19,11 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 ?>
 <div class="session-list<?php echo $this->pageclass_sfx;?>">
 	<div>
-		<div class="<?php echo $className .'-session' . $this->pageclass_sfx;?>">
+		<div class="<?php echo 'page-header ' . $className .'-session' . $this->pageclass_sfx;?>">
 			<?php if ($this->params->get('show_page_heading')) : ?>
-				<h1>
+				<h2>
 					<?php echo $this->escape($this->params->get('page_heading')); ?>
-				</h1>
+				</h2>
 			<?php endif; ?>
 
 			<?php if (empty($this->items)) : ?>
@@ -31,23 +31,6 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 			<?php else : ?>
 				<form action="<?php echo htmlspecialchars(JUri::getInstance()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
 					<fieldset class="filters btn-toolbar clearfix">
-						<?php if ($this->params->get('filter_field') != 'hide') :?>
-							<div class="btn-group">
-								<label class="filter-search-lbl element-invisible" for="filter-search">
-									<?php echo JText::_('COM_CONTENT_' . $this->params->get('filter_field') . '_FILTER_LABEL') . '&#160;'; ?>
-								</label>
-								<input type="text" name="filter-search" id="filter-search" value="<?php echo $this->escape($this->state->get('list.filter')); ?>" class="inputbox" onchange="document.adminForm.submit();" title="<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>" placeholder="<?php echo JText::_('COM_CONTENT_' . $this->params->get('filter_field') . '_FILTER_LABEL'); ?>" />
-							</div>
-						<?php endif; ?>
-						<?php if ($this->params->get('show_pagination_limit')) : ?>
-							<div class="btn-group pull-right">
-								<label for="limit" class="element-invisible">
-									<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>
-								</label>
-								<?php echo $this->pagination->getLimitBox(); ?>
-							</div>
-						<?php endif; ?>
-
 						<input type="hidden" name="filter_order" value="" />
 						<input type="hidden" name="filter_order_Dir" value="" />
 						<input type="hidden" name="limitstart" value="" />
@@ -85,14 +68,10 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 								<th id="sessionslist_header_length">
 									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_LENGTH', 'length', $listDirn, $listOrder); ?>
 								</th>
-								<th id="sessionslist_header_status">
-									<?php echo JHtml::_('grid.sort', 'COM_MOODLE_SESSION_STATUS', 'a.status', $listDirn, $listOrder); ?>
-								</th>
 							</tr>
 						</thead>
 						<!--<?php //endif; ?>-->
 						<tbody>
-
 							<?php foreach ($this->items as $i => $session) : ?>
 								<tr class="sessions-list-row<?php echo $i % 2; ?>" >
 									<td <?php echo $headerName; ?> class="list-name">
@@ -112,12 +91,8 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 											$this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC3')))
 										); ?>
 									</td>
-
 									<td <?php echo $headerLength; ?> class="list-length">
 										<?php echo $session->length . ' day(s)'; ?>
-									</td>
-									<td <?php echo $headerStatus; ?> class="list-status">
-										<?php echo $session->id ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>

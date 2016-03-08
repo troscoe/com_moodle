@@ -182,6 +182,10 @@ class MoodleModelSessions extends JModelList
 		$query->select('IF (s.datetimeknown = 0, 0, from_unixtime(min(d.timestart))) as date, count(d.timestart) as length');
 		$query->join('LEFT', '#__moodle_facetoface_sessions_dates AS d ON d.sessionid = s.id');
 
+		$query->select('m.availability');
+		//TO DO: Change module = 25 to map to facetoface module id
+		$query->join('LEFT', '#__moodle_course_modules AS m ON m.instance = f.id AND m.module = 25');
+
 		$listOrder = $db->escape($this->state->get('list.ordering',  'default_sort_column'));
 		$listDirn  = $db->escape($this->state->get('list.direction', 'ASC'));
 
@@ -196,6 +200,10 @@ class MoodleModelSessions extends JModelList
 			$query->order($listOrder.' '.$listDirn);
 		}
  		$query->where('d.timestart >= UNIX_TIMESTAMP()');
+ 		$user = JFactory::getUser();
+		if (!in_array(10, $user->getAuthorisedGroups())){
+			$query->where('m.availability IS NULL');
+		}
  		$query->group($db->quoteName('s.id'));
 
 		return $query;
