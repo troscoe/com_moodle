@@ -35,7 +35,10 @@ class MoodleModelSessions extends JModelList
 				'city','field.city',
 				'country','field.country',
 				'language','field.language',
-				'provider','field.provider'
+				'provider','field.provider',
+				'region','filter.region',
+				'solution','filter.solution',
+				'access','filter.access'
 			);
 		}
 		parent::__construct($config);
@@ -52,8 +55,20 @@ class MoodleModelSessions extends JModelList
 	 *
 	 * @since   1.6
 	 */
-	protected function populateState($ordering = 'f.name', $direction = 'desc')
+	protected function populateState($ordering = 'date', $direction = 'asc')
 	{
+		// Initialise variables.
+        $app = JFactory::getApplication();
+
+		$region = $app->getUserStateFromRequest($this->context . '.filter.region', 'filter_region', '', 'string');
+    	$this->setState('filter.region', $region);
+
+    	$solution = $app->getUserStateFromRequest($this->context . '.filter.solution', 'filter_solution', '', 'string');
+    	$this->setState('filter.solution', $solution);
+
+    	$access = $app->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', '', 'string');
+    	$this->setState('filter.access', $access);
+
 		//Set list state ordering defaults
 		parent::populateState($ordering, $direction);
 	}
@@ -177,10 +192,10 @@ class MoodleModelSessions extends JModelList
 		$query->from('#__moodle_facetoface_sessions AS s');
 
 		$query->select('f.name as name');
-		$query->join('LEFT', '#__moodle_facetoface AS f ON f.id = s.facetoface');
+		$query->join('INNER', '#__moodle_facetoface AS f ON f.id = s.facetoface');
 
 		$query->select('c.id AS course_id, c.fullname AS course_name');
-		$query->join('LEFT', '#__moodle_course AS c ON c.id = f.course');
+		$query->join('INNER', '#__moodle_course AS c ON c.id = f.course');
 
 		$query->select('cat.id AS cat_id, cat.name AS cat_name');
 		$query->join('LEFT', '#__moodle_course_categories AS cat ON cat.id = c.category');
@@ -195,17 +210,52 @@ class MoodleModelSessions extends JModelList
 		$listOrder = $db->escape($this->state->get('list.ordering',  'default_sort_column'));
 		$listDirn  = $db->escape($this->state->get('list.direction', 'ASC'));
 
+		//ORDER BY CUSTOM FIELD ELSE REGULAR
 		$pieces = explode(".", $listOrder);
 		if ($pieces[0] == 'field') {
-			$query->select('e.data as '.$pieces[1]);
-			$query->join('LEFT', '#__moodle_facetoface_session_data AS e ON e.sessionid = s.id');
-			$query->join('LEFT', '#__moodle_facetoface_session_field AS g ON g.id = e.fieldid');
-			$query->where('g.shortname ="'.$pieces[1].'"');
+			$query->select('x.data as '.$pieces[1]);
+			$query->join('LEFT', '#__moodle_facetoface_session_data AS x ON x.sessionid = s.id');
+			$query->join('LEFT', '#__moodle_facetoface_session_field AS z ON z.id = x.fieldid');
+			$query->where('z.shortname ="'.$pieces[1].'"');
 			$query->order($pieces[1].' '.$listDirn);
 		} else {
 			$query->order($listOrder.' '.$listDirn);
 		}
- 		$query->where('d.timestart >= UNIX_TIMESTAMP()');
+
+		// Filter solution
+		$solution = $db->escape($this->getState('filter.solution'));
+		if (!empty($solution)) {
+			$query->select('fs1.data');
+			$query->join('LEFT', '#__moodle_facetoface_session_data AS fs1 ON fs1.sessionid = s.id');
+			$query->join('LEFT', '#__moodle_facetoface_session_field AS fs2 ON fs2.id = fs1.fieldid');
+			$query->where('fs2.shortname ="solution"');
+			$query->where('(fs1.data="'.$solution.'")');
+		}
+
+		// Filter support
+		$access = $db->escape($this->getState('filter.access'));
+		if (!empty($access)) {
+			$query->select('fs3.data');
+			$query->join('LEFT', '#__moodle_facetoface_session_data AS fs3 ON fs3.sessionid = s.id');
+			$query->join('LEFT', '#__moodle_facetoface_session_field AS fr4 ON fr4.id = fs3.fieldid');
+			$query->where('fr4.shortname ="access"');
+			$query->where('(fs3.data="'.$access.'")');
+		}
+
+		// Filter region
+		$region = $db->escape($this->getState('filter.region'));
+		if (!empty($region)) {
+			$query->select('fr1.data');
+			$query->join('LEFT', '#__moodle_facetoface_session_data AS fr1 ON fr1.sessionid = s.id');
+			$query->join('LEFT', '#__moodle_facetoface_session_field AS fr2 ON fr2.id = fr1.fieldid');
+			$query->where('fr2.shortname ="region"');
+			$query->where('(fr1.data="'.$region.'")');
+		}
+
+		//GET FUTURE SESSIONS ONLY
+ 		$query->having('date >= NOW()');
+
+ 		//RESTRICT TO EMPLOYEE USER GROUP 10 ONLY (NEEDS UPDATED!!)
  		$user = JFactory::getUser();
 		if (!in_array(10, $user->getAuthorisedGroups())){
 			$query->where('m.availability IS NULL');

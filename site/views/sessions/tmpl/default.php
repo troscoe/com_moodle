@@ -10,6 +10,19 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+//Get region options
+JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+$regions = JFormHelper::loadFieldType('Region', false);
+$regionOptions = $regions->getOptions();
+
+//Get solution options
+$solutions = JFormHelper::loadFieldType('Solution', false);
+$solutionOptions = $solutions->getOptions();
+
+//Get solution options
+$accesses = JFormHelper::loadFieldType('Access', false);
+$accessOptions = $accesses->getOptions();
+
 // Create some shortcuts.
 $params    = &$this->item->params;
 $n         = count($this->items);
@@ -25,19 +38,30 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 					<?php echo $this->escape($this->params->get('page_heading')); ?>
 				</h2>
 			<?php endif; ?>
-
+			<form action="<?php echo htmlspecialchars(JUri::getInstance()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
+				<fieldset class="filters btn-toolbar clearfix">
+					<select name="filter_solution" class="inputbox" onchange="this.form.submit()">
+						<option value=""> - Select Solution - </option>
+						<?php echo JHtml::_('select.options', $solutionOptions, 'text', 'text', $this->state->get('filter.solution'));?>
+					</select>
+					<select name="filter_region" class="inputbox" onchange="this.form.submit()">
+						<option value=""> - Select Region - </option>
+						<?php echo JHtml::_('select.options', $regionOptions, 'text', 'text', $this->state->get('filter.region'));?>
+					</select>
+					<div class="btn-group pull-right">
+						<select name="filter_access" class="inputbox" onchange="this.form.submit()">
+							<option value="">All Classes</option>
+							<?php echo JHtml::_('select.options', $accessOptions, 'text', 'text', $this->state->get('filter.access'));?>
+						</select>
+					</div>
+					<input type="hidden" name="filter_order" value="" />
+					<input type="hidden" name="filter_order_Dir" value="" />
+					<input type="hidden" name="limitstart" value="" />
+					<input type="hidden" name="task" value="" />
+				</fieldset>
 			<?php if (empty($this->items)) : ?>
 				<p><?php echo "No sessions"; ?></p>
 			<?php else : ?>
-				<form action="<?php echo htmlspecialchars(JUri::getInstance()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
-					<fieldset class="filters btn-toolbar clearfix">
-						<input type="hidden" name="filter_order" value="" />
-						<input type="hidden" name="filter_order_Dir" value="" />
-						<input type="hidden" name="limitstart" value="" />
-						<input type="hidden" name="task" value="" />
-					</fieldset>
-
-
 					<table class="sessions table table-striped table-bordered table-hover">
 						<?php
 						$headerName    			= '';
@@ -84,7 +108,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 										$cat_slug = JFilterOutput::stringURLSafe ($session->cat_name);
 									    $course_slug = JFilterOutput::stringURLSafe ($session->course_name);
 
-									    $url = JRoute::_("index.php?option=com_joomdle&view=detail&cat_id=$cat_id:$cat_slug&course_id=$course_id:$course_slug&Itemid=$itemid&session_id=$session->id");
+									    $url = JRoute::_("index.php?option=com_joomdle&view=course&cat_id=$cat_id:$cat_slug&course_id=$course_id:$course_slug&session_id=$session->id");
 										?>
 										<a href="<?php echo $url; ?>">
 											<?php echo $this->escape($session->name); ?>
@@ -125,12 +149,8 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 						<?php echo $this->pagination->getPagesLinks(); ?>
 					</div>
 					<?php endif; ?>
-
-
-
-
-				</form>
 			<?php endif; ?>
+			</form>
 		</div>
 	</div>
 </div>
